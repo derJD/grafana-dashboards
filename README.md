@@ -27,3 +27,7 @@ A set of Grafana dashboards I built over time.
 
 ## influxdb/Telegraf_no_Templates.json
 ![telegraf_no_templates](img/influxdb_telegraf.jpg)
+
+## influxdb/internal_stats.json
+![internal_stats http](img/influx_internal_http.jpg)
+![internal_stats shard database](img/influx_internal_shard_db.jpg)
