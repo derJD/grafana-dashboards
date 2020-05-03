@@ -1,7 +1,44 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "influxdb",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.7.2"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
+        "$$hashKey": "object:220",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -15,12 +52,13 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 25,
-  "iteration": 1553605196476,
+  "id": null,
+  "iteration": 1588345395618,
   "links": [],
   "panels": [
     {
       "collapsed": false,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -42,6 +80,7 @@
         "#C4162A",
         "#C4162A"
       ],
+      "datasource": "${DS_INFLUXDB}",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -183,13 +222,16 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 10,
         "x": 3,
         "y": 1
       },
+      "hiddenSeries": false,
       "id": 12,
       "legend": {
         "alignAsTable": true,
@@ -206,12 +248,16 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 0.5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -367,13 +413,16 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 10,
         "x": 14,
         "y": 1
       },
+      "hiddenSeries": false,
       "id": 19,
       "legend": {
         "alignAsTable": true,
@@ -390,12 +439,16 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 0.5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -527,6 +580,7 @@
         "#C4162A",
         "#C4162A"
       ],
+      "datasource": "${DS_INFLUXDB}",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -668,13 +722,16 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 10,
         "x": 3,
         "y": 5
       },
+      "hiddenSeries": false,
       "id": 18,
       "legend": {
         "alignAsTable": true,
@@ -691,12 +748,16 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 0.5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -847,13 +908,16 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 10,
         "x": 14,
         "y": 5
       },
+      "hiddenSeries": false,
       "id": 20,
       "legend": {
         "alignAsTable": true,
@@ -870,12 +934,16 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 0.5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -999,6 +1067,7 @@
     },
     {
       "collapsed": false,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1015,13 +1084,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 0,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 24,
         "x": 0,
         "y": 10
       },
+      "hiddenSeries": false,
       "id": 6,
       "legend": {
         "alignAsTable": true,
@@ -1038,6 +1110,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 2,
@@ -1049,6 +1124,7 @@
           "transform": "negative-Y"
         }
       ],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -1176,6 +1252,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
+      "datasource": "${DS_INFLUXDB}",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -1292,13 +1369,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 21,
         "x": 3,
         "y": 15
       },
+      "hiddenSeries": false,
       "id": 4,
       "legend": {
         "alignAsTable": true,
@@ -1315,6 +1395,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 0.5,
@@ -1326,6 +1409,7 @@
           "transform": "negative-Y"
         }
       ],
+      "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
@@ -1443,13 +1527,16 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 12,
         "x": 0,
         "y": 19
       },
+      "hiddenSeries": false,
       "id": 15,
       "legend": {
         "alignAsTable": true,
@@ -1466,12 +1553,16 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": true,
       "steppedLine": false,
       "targets": [
@@ -1568,16 +1659,141 @@
     },
     {
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 12,
         "y": 19
       },
+      "hiddenSeries": false,
+      "id": 24,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "influxdb_memstats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "sys"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Memory Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 2,
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "hiddenSeries": false,
       "id": 16,
       "legend": {
         "alignAsTable": true,
@@ -1594,12 +1810,16 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
+      "spaceLength": 10,
       "stack": true,
       "steppedLine": false,
       "targets": [
@@ -1753,13 +1973,16 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 12,
         "y": 24
       },
+      "hiddenSeries": false,
       "id": 17,
       "legend": {
         "alignAsTable": true,
@@ -1778,6 +2001,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 2,
@@ -1789,6 +2015,7 @@
           "transform": "negative-Y"
         }
       ],
+      "spaceLength": 10,
       "stack": true,
       "steppedLine": false,
       "targets": [
@@ -1917,21 +2144,19 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 18,
+  "schemaVersion": 22,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
         "allValue": null,
-        "current": {
-          "text": "grafana.int.der-jd.de",
-          "value": "grafana.int.der-jd.de"
-        },
-        "datasource": "influxdb",
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
         "definition": "SHOW TAG VALUES FROM /influx/ WITH KEY = \"host\" ",
         "hide": 0,
         "includeAll": false,
+        "index": -1,
         "label": null,
         "multi": false,
         "name": "Host",
@@ -1981,5 +2206,8 @@
   "timezone": "",
   "title": "InfluxDB Internal Stats",
   "uid": "3IhZk33mk",
-  "version": 7
+  "variables": {
+    "list": []
+  },
+  "version": 10
 }

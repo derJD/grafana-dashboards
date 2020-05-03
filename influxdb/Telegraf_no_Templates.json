@@ -1,8 +1,16 @@
 {
   "__inputs": [
     {
-      "name": "DS_INFLUX",
-      "label": "influx",
+      "name": "DS_GRAPHITE",
+      "label": "graphite",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "graphite",
+      "pluginName": "Graphite"
+    },
+    {
+      "name": "DS_INFLUX_TELEGRAF",
+      "label": "influx telegraf",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -14,48 +22,57 @@
       "type": "panel",
       "id": "alertlist",
       "name": "Alert List",
-      "version": "5.0.0"
+      "version": ""
     },
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.2.1"
+      "version": "6.7.2"
     },
     {
       "type": "panel",
       "id": "graph",
       "name": "Graph",
-      "version": "5.0.0"
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "graphite",
+      "name": "Graphite",
+      "version": "1.0.0"
     },
     {
       "type": "datasource",
       "id": "influxdb",
       "name": "InfluxDB",
-      "version": "5.0.0"
+      "version": "1.0.0"
     },
     {
       "type": "panel",
       "id": "singlestat",
       "name": "Singlestat",
-      "version": "5.0.0"
+      "version": ""
     },
     {
       "type": "panel",
       "id": "table",
       "name": "Table",
-      "version": "5.0.0"
+      "version": ""
     }
   ],
   "annotations": {
     "list": [
       {
+        "$$hashKey": "object:13",
         "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
+        "datasource": "$source",
+        "enable": false,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
+        "limit": 100,
         "name": "Annotations & Alerts",
+        "showIn": 0,
         "type": "dashboard"
       }
     ]
@@ -64,9 +81,11 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
+  "iteration": 1588445919508,
   "links": [],
   "panels": [
     {
+      "datasource": "${DS_GRAPHITE}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -80,9 +99,10 @@
     {
       "dashboardFilter": "",
       "dashboardTags": [],
+      "datasource": "${DS_GRAPHITE}",
       "folderId": null,
       "gridPos": {
-        "h": 10,
+        "h": 6,
         "w": 5,
         "x": 0,
         "y": 1
@@ -91,7 +111,7 @@
       "limit": 10,
       "links": [],
       "nameFilter": "",
-      "onlyAlertsOnDashboard": false,
+      "onlyAlertsOnDashboard": true,
       "show": "current",
       "sortOrder": 1,
       "stateFilter": [],
@@ -102,9 +122,10 @@
     {
       "dashboardFilter": "",
       "dashboardTags": [],
+      "datasource": "${DS_GRAPHITE}",
       "folderId": null,
       "gridPos": {
-        "h": 10,
+        "h": 6,
         "w": 5,
         "x": 5,
         "y": 1
@@ -113,7 +134,7 @@
       "limit": 10,
       "links": [],
       "nameFilter": "",
-      "onlyAlertsOnDashboard": false,
+      "onlyAlertsOnDashboard": true,
       "show": "changes",
       "sortOrder": 1,
       "stateFilter": [],
@@ -130,7 +151,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUX}",
+      "datasource": "$source",
       "decimals": 0,
       "format": "percent",
       "gauge": {
@@ -146,7 +167,7 @@
         "x": 10,
         "y": 1
       },
-      "id": 42,
+      "id": 43,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -197,16 +218,18 @@
               "type": "fill"
             }
           ],
-          "measurement": "disk",
+          "measurement": "cpu",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT 100 - mean(\"usage_idle\") FROM \"cpu\" WHERE (\"cpu\" = 'cpu-total' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "used_percent"
+                  "usage_idle"
                 ],
                 "type": "field"
               },
@@ -218,15 +241,21 @@
           ],
           "tags": [
             {
-              "key": "path",
+              "key": "cpu",
               "operator": "=",
-              "value": "/data"
+              "value": "cpu-total"
+            },
+            {
+              "condition": "AND",
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$host$/"
             }
           ]
         }
       ],
       "thresholds": "75,85",
-      "title": "Pool Used Percent",
+      "title": "CPU Used Percent",
       "transparent": true,
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -246,10 +275,10 @@
           "value": "current"
         }
       ],
-      "datasource": "${DS_INFLUX}",
+      "datasource": "$source",
       "fontSize": "100%",
       "gridPos": {
-        "h": 10,
+        "h": 6,
         "w": 5,
         "x": 14,
         "y": 1
@@ -266,12 +295,14 @@
       "styles": [
         {
           "alias": "Time",
+          "align": "auto",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "pattern": "Time",
           "type": "hidden"
         },
         {
           "alias": "Used",
+          "align": "auto",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -334,7 +365,13 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$host$/"
+            }
+          ]
         }
       ],
       "timeFrom": null,
@@ -350,10 +387,10 @@
           "value": "current"
         }
       ],
-      "datasource": "${DS_INFLUX}",
+      "datasource": "$source",
       "fontSize": "100%",
       "gridPos": {
-        "h": 10,
+        "h": 6,
         "w": 5,
         "x": 19,
         "y": 1
@@ -370,12 +407,14 @@
       "styles": [
         {
           "alias": "Time",
+          "align": "auto",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "pattern": "Time",
           "type": "hidden"
         },
         {
           "alias": "Total",
+          "align": "auto",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -437,7 +476,13 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$host$/"
+            }
+          ]
         }
       ],
       "timeFrom": null,
@@ -449,133 +494,13 @@
     {
       "cacheTimeout": null,
       "colorBackground": false,
-      "colorValue": true,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "datasource": "${DS_INFLUX}",
-      "decimals": 0,
-      "format": "percent",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": true,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 10,
-        "y": 5
-      },
-      "id": 43,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": true
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "cpu",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT 100 - mean(\"usage_idle\") FROM \"cpu\" WHERE (\"cpu\" = 'cpu-total') AND $timeFilter GROUP BY time($__interval) fill(null)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "usage_idle"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "cpu",
-              "operator": "=",
-              "value": "cpu-total"
-            }
-          ]
-        }
-      ],
-      "thresholds": "75,85",
-      "title": "CPU Used Percent",
-      "transparent": true,
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
       "colorValue": false,
       "colors": [
         "#299c46",
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUX}",
+      "datasource": "$source",
       "format": "s",
       "gauge": {
         "maxValue": 100,
@@ -588,7 +513,7 @@
         "h": 2,
         "w": 4,
         "x": 10,
-        "y": 9
+        "y": 5
       },
       "id": 48,
       "interval": null,
@@ -660,7 +585,13 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$host$/"
+            }
+          ]
         }
       ],
       "thresholds": "",
@@ -678,12 +609,151 @@
       "valueName": "current"
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$source",
+      "decimals": 2,
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 75,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "path"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "disk",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "used_percent"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$host$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Volume used percent",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 2,
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 6,
       "panels": [
@@ -692,15 +762,17 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "decimals": 2,
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 12
+            "y": 13
           },
+          "hiddenSeries": false,
           "id": 2,
           "legend": {
             "alignAsTable": true,
@@ -717,6 +789,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -743,7 +818,7 @@
               ],
               "measurement": "cpu",
               "orderByTime": "ASC",
-              "policy": "autogen",
+              "policy": "default",
               "query": "SELECT mean(\"usage_guest\") AS \"guest\", mean(\"usage_guest_nice\") AS \"guest_nice\", mean(\"usage_iowait\") AS \"iowait\", mean(\"usage_irq\") AS \"irq\", mean(\"usage_nice\") AS \"nice\", mean(\"usage_softirq\") AS \"softirq\", mean(\"usage_steal\") AS \"steal\", mean(\"usage_system\") AS \"system\", mean(\"usage_user\") AS \"user\" FROM \"autogen\".\"cpu\" WHERE (\"cpu\" = 'cpu-total' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
               "rawQuery": false,
               "refId": "A",
@@ -917,12 +992,19 @@
                   "key": "cpu",
                   "operator": "=",
                   "value": "cpu-total"
+                },
+                {
+                  "condition": "AND",
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
                 }
               ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "AVG CPU usage",
           "tooltip": {
@@ -967,15 +1049,17 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "decimals": 2,
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 12
+            "y": 13
           },
+          "hiddenSeries": false,
           "id": 4,
           "legend": {
             "alignAsTable": true,
@@ -992,6 +1076,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1024,22 +1111,22 @@
               ],
               "measurement": "cpu",
               "orderByTime": "ASC",
-              "policy": "autogen",
-              "query": "SELECT mean(\"usage_guest\") + mean(\"usage_guest_nice\") + mean(\"usage_iowait\") + mean(\"usage_irq\") + mean(\"usage_nice\") + mean(\"usage_softirq\") + mean(\"usage_steal\") + mean(\"usage_system\") + mean(\"usage_user\") AS \"cpu_total\" FROM \"autogen\".\"cpu\" WHERE (\"cpu\" != 'cpu-total') AND $timeFilter GROUP BY time($__interval), \"cpu\" fill(null)",
-              "rawQuery": true,
+              "policy": "default",
+              "query": "SELECT sum(\"usage_guest\")+sum(\"usage_guest_nice\") FROM \"cpu\" WHERE (\"cpu\" != 'cpu-total') AND $timeFilter GROUP BY time($__interval), \"cpu\" fill(null)",
+              "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "usage_guest,usage_guest_nice"
+                      "usage_active"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
-                    "type": "sum"
+                    "type": "mean"
                   }
                 ]
               ],
@@ -1048,12 +1135,19 @@
                   "key": "cpu",
                   "operator": "!=",
                   "value": "cpu-total"
+                },
+                {
+                  "condition": "AND",
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
                 }
               ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "AVG CPU per core",
           "tooltip": {
@@ -1099,11 +1193,12 @@
     },
     {
       "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 13
       },
       "id": 8,
       "panels": [
@@ -1112,15 +1207,17 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "decimals": 2,
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 2
+            "y": 14
           },
+          "hiddenSeries": false,
           "id": 10,
           "legend": {
             "alignAsTable": true,
@@ -1136,6 +1233,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1221,11 +1321,18 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Load",
           "tooltip": {
@@ -1270,15 +1377,17 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "decimals": 2,
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 2
+            "y": 14
           },
+          "hiddenSeries": false,
           "id": 11,
           "legend": {
             "alignAsTable": true,
@@ -1294,6 +1403,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1345,7 +1457,7 @@
                 [
                   {
                     "params": [
-                      "free"
+                      "available"
                     ],
                     "type": "field"
                   },
@@ -1361,11 +1473,18 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Memory",
           "tooltip": {
@@ -1410,15 +1529,17 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "decimals": 2,
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 2
+            "y": 14
           },
+          "hiddenSeries": false,
           "id": 12,
           "legend": {
             "alignAsTable": true,
@@ -1434,6 +1555,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1528,11 +1652,18 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Swap",
           "tooltip": {
@@ -1571,6 +1702,216 @@
             "align": false,
             "alignLevel": null
           }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUX_TELEGRAF}",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 23
+          },
+          "hiddenSeries": false,
+          "id": 87,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "processes",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT 100 - mean(\"Percent_Idle_Time\") FROM \"win_cpu\" WHERE (\"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "blocked"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "blocked"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "idle"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "idle"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "sleeping"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "sleeping"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "total"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "running"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "running"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Processes",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:232",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:233",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "title": "Load/Memory/Swap",
@@ -1578,11 +1919,12 @@
     },
     {
       "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 14
       },
       "id": 20,
       "panels": [
@@ -1591,13 +1933,14 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
+          "decimals": 2,
           "fill": 1,
           "gridPos": {
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 1
+            "y": 33
           },
           "id": 26,
           "legend": {
@@ -1608,13 +1951,16 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "total": false,
+            "sort": "total",
+            "sortDesc": true,
+            "total": true,
             "values": true
           },
           "lines": true,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {},
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1668,8 +2014,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -1690,8 +2038,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -1712,12 +2062,19 @@
                   "key": "interface",
                   "operator": "!~",
                   "value": "/br-/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
                 }
               ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Throughput",
           "tooltip": {
@@ -1763,11 +2120,12 @@
     },
     {
       "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 15
       },
       "id": 14,
       "panels": [
@@ -1776,13 +2134,13 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 1
+            "y": 34
           },
           "id": 16,
           "legend": {
@@ -1802,6 +2160,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "options": {},
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -1840,6 +2199,8 @@
               "measurement": "diskio",
               "orderByTime": "ASC",
               "policy": "default",
+              "query": "SELECT non_negative_derivative(mean(\"read_bytes\"), 1s) AS \"reads\", non_negative_derivative(mean(\"write_bytes\"), 1s) AS \"writes\" FROM \"diskio\" WHERE \"host\" =~ /^$host$/ AND (\"name\" =~ /[s,v]d[a-z]$/ OR \"name\" =~ /:/) AND $timeFilter GROUP BY time($__interval), \"name\" fill(none)",
+              "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -1855,8 +2216,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -1877,8 +2240,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -1890,15 +2255,28 @@
               ],
               "tags": [
                 {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
                   "key": "name",
                   "operator": "=~",
-                  "value": "/sd[a-z]$/"
+                  "value": "/[s,v]d[a-z]$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "name",
+                  "operator": "=~",
+                  "value": "/:/"
                 }
               ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Disk Througput",
           "tooltip": {
@@ -1943,13 +2321,13 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 42
           },
           "id": 17,
           "legend": {
@@ -1969,6 +2347,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "options": {},
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2007,6 +2386,8 @@
               "measurement": "diskio",
               "orderByTime": "ASC",
               "policy": "default",
+              "query": "SELECT non_negative_derivative(mean(\"reads\"), 1s) AS \"reads\", non_negative_derivative(mean(\"writes\"), 1s) AS \"writes\" FROM \"diskio\" WHERE \"host\" =~ /^$host$/ AND (\"name\" =~ /[s,v]d[a-z]$/ OR \"name\" =~ /:/) AND $timeFilter GROUP BY time($__interval), \"name\" fill(none)",
+              "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -2022,8 +2403,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -2044,8 +2427,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -2059,13 +2444,20 @@
                 {
                   "key": "name",
                   "operator": "=~",
-                  "value": "/sd[a-z]$/"
+                  "value": "/[s,v]d[a-z]$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
                 }
               ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Disk IO/s",
           "tooltip": {
@@ -2110,13 +2502,13 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 50
           },
           "id": 18,
           "legend": {
@@ -2136,6 +2528,7 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
+          "options": {},
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2174,6 +2567,8 @@
               "measurement": "diskio",
               "orderByTime": "ASC",
               "policy": "default",
+              "query": "SELECT non_negative_derivative(mean(\"read_time\"), 1s) AS \"reads\", non_negative_derivative(mean(\"write_time\"), 1s) AS \"writes\" FROM \"diskio\" WHERE \"host\" =~ /^$host$/ AND (\"name\" =~ /[s,v]d[a-z]$/ OR \"name\" =~ /:/) AND $timeFilter GROUP BY time($__interval), \"name\" fill(none)",
+              "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -2189,8 +2584,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -2211,8 +2608,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
                   },
                   {
                     "params": [
@@ -2226,13 +2625,20 @@
                 {
                   "key": "name",
                   "operator": "=~",
-                  "value": "/sd[a-z]$/"
+                  "value": "/[s,v]d[a-z]$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
                 }
               ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Disk Latency",
           "tooltip": {
@@ -2278,11 +2684,2679 @@
     },
     {
       "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 16
+      },
+      "id": 53,
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "$source",
+          "decimals": null,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 0,
+            "y": 35
+          },
+          "id": 55,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "n_cpus"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "",
+          "title": "Total CPUs",
+          "transparent": true,
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "$source",
+          "decimals": null,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 3,
+            "y": 35
+          },
+          "id": 59,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "n_containers_running"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "",
+          "title": "Running Containers",
+          "transparent": true,
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "gridPos": {
+            "h": 5,
+            "w": 15,
+            "x": 9,
+            "y": 35
+          },
+          "id": 62,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "container_name"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker_container_cpu",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "usage_percent"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "CPU Usage",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "$source",
+          "decimals": 1,
+          "format": "bytes",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 0,
+            "y": 38
+          },
+          "id": 58,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "memory_total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "",
+          "title": "Total Memory",
+          "transparent": true,
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "$source",
+          "decimals": null,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 3,
+            "y": 38
+          },
+          "id": 60,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "n_containers_stopped"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "",
+          "title": "Stopped Containers",
+          "transparent": true,
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "gridPos": {
+            "h": 5,
+            "w": 15,
+            "x": 9,
+            "y": 40
+          },
+          "id": 63,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "container_name"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker_container_mem",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "usage"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Memory Usage",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "$source",
+          "decimals": null,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 0,
+            "y": 41
+          },
+          "id": 56,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "n_containers"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "",
+          "title": "Total Containers",
+          "transparent": true,
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "$source",
+          "decimals": null,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 3,
+            "y": 41
+          },
+          "id": 57,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "n_containers_paused"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "",
+          "title": "Paused Containers",
+          "transparent": true,
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 45
+          },
+          "id": 64,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/IOps/",
+              "transform": "negative-Y",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "container_name"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "docker_container_blkio",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "io_service_bytes_recursive_total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      "throughput"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "io_serviced_recursive_total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      "IOps"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Disk Usage",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Docker",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 51,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 36
+          },
+          "id": 66,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "puppetagent.events total",
+              "bars": false,
+              "points": true,
+              "yaxis": 2
+            },
+            {
+              "alias": "puppetagent.changes total",
+              "bars": false,
+              "points": true,
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "puppetagent",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "time_total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "time total"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "events_total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "events total"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "changes_total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "changes total"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "PuppetAgent",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "PuppetAgent",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 70,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 36
+          },
+          "id": 68,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "rabbitmq_overview",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "channels"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "channels"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "connections"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "connections"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "consumers"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "consumers"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "exchanges"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "exchanges"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "messages"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "messages"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "queues"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "queues"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Overview",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "gridPos": {
+            "h": 12,
+            "w": 12,
+            "x": 0,
+            "y": 42
+          },
+          "id": 72,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "avg",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/.*out.*/",
+              "transform": "negative-Y"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "1m"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "exchange"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "limit": "",
+              "measurement": "rabbitmq_exchange",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT mean(\"messages_publish_in\") AS \"in\", mean(\"messages_publish_out\") AS \"out\" FROM \"rabbitmq_exchange\" WHERE (\"host\" =~ /^$host$/) AND $timeFilter GROUP BY time(1m), \"exchange\" fill(null)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "messages_publish_in"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  },
+                  {
+                    "params": [
+                      "in"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "messages_publish_out"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  },
+                  {
+                    "params": [
+                      "out"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "slimit": "",
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Exchange",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 0,
+          "gridPos": {
+            "h": 12,
+            "w": 12,
+            "x": 12,
+            "y": 42
+          },
+          "id": 73,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "sort": "avg",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 0.5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/.*messages.*/",
+              "transform": "negative-Y"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "1m"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "queue"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "limit": "",
+              "measurement": "rabbitmq_queue",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT mean(\"messages_publish_in\") AS \"in\", mean(\"messages_publish_out\") AS \"out\" FROM \"rabbitmq_exchange\" WHERE (\"host\" =~ /^$host$/) AND $timeFilter GROUP BY time(1m), \"exchange\" fill(null)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "consumers"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "consumers"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "messages"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "messages"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "slimit": "",
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Queue",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "RabbitMQ",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 79,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 20
+          },
+          "hiddenSeries": false,
+          "id": 77,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "proxy"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "haproxy",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "active_servers"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "type",
+                  "operator": "=",
+                  "value": "backend"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Active Servers",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:233",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:234",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 20
+          },
+          "hiddenSeries": false,
+          "id": 82,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": true,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 0.5,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "proxy"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "haproxy",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rate"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "type",
+                  "operator": "=",
+                  "value": "backend"
+                },
+                {
+                  "condition": "AND",
+                  "key": "sv",
+                  "operator": "=",
+                  "value": "BACKEND"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Connections",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:233",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:234",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 26
+          },
+          "hiddenSeries": false,
+          "id": 81,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "sv"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "proxy"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "haproxy",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "bin"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "non_negative_difference"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "type",
+                  "operator": "=",
+                  "value": "server"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Incomming Traffic",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:687",
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:688",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 26
+          },
+          "hiddenSeries": false,
+          "id": 83,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "sv"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "proxy"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "haproxy",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "bout"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "non_negative_difference"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "type",
+                  "operator": "=",
+                  "value": "server"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Outgoing Traffic",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:687",
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:688",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "columns": [],
+          "datasource": "$source",
+          "fontSize": "100%",
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 34
+          },
+          "id": 85,
+          "pageSize": null,
+          "pluginVersion": "6.7.2",
+          "showHeader": true,
+          "sort": {
+            "col": 3,
+            "desc": false
+          },
+          "styles": [
+            {
+              "$$hashKey": "object:1647",
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "link": false,
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "$$hashKey": "object:1648",
+              "alias": "",
+              "align": "right",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "sv"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "proxy"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "limit": "1",
+              "measurement": "haproxy",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT \"status\" FROM \"haproxy\" WHERE (\"host\" =~ /^$host$/ AND \"type\" = 'server') AND $timeFilter GROUP BY \"sv\", \"proxy\" LIMIT 1",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "status"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "type",
+                  "operator": "=",
+                  "value": "server"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Server Status",
+          "transform": "table",
+          "transparent": true,
+          "type": "table"
+        }
+      ],
+      "title": "HAProxy",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
       },
       "id": 24,
       "panels": [
@@ -2291,13 +5365,13 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 1
+            "y": 37
           },
           "id": 22,
           "legend": {
@@ -2312,7 +5386,7 @@
           "lines": true,
           "linewidth": 1,
           "links": [],
-          "nullPointMode": "null",
+          "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2352,7 +5426,7 @@
                 [
                   {
                     "params": [
-                      "*"
+                      "exit_status"
                     ],
                     "type": "field"
                   },
@@ -2367,14 +5441,155 @@
                   "key": "enabled",
                   "operator": "=",
                   "value": "Enabled"
+                },
+                {
+                  "condition": "AND",
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
                 }
               ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "SMART",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$source",
+          "fill": 1,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 37
+          },
+          "id": 49,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "smart_device",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "temp_c"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "enabled",
+                  "operator": "=",
+                  "value": "Enabled"
+                },
+                {
+                  "condition": "AND",
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Temperature",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -2418,11 +5633,12 @@
     },
     {
       "collapsed": true,
+      "datasource": "${DS_GRAPHITE}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 21
       },
       "id": 28,
       "panels": [
@@ -2431,14 +5647,16 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 6
+            "y": 39
           },
+          "hiddenSeries": false,
           "id": 30,
           "legend": {
             "alignAsTable": true,
@@ -2455,6 +5673,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2637,11 +5858,18 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "ARC Size",
           "tooltip": {
@@ -2689,14 +5917,16 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 6
+            "y": 39
           },
+          "hiddenSeries": false,
           "id": 31,
           "legend": {
             "alignAsTable": true,
@@ -2713,6 +5943,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2760,8 +5993,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -2782,8 +6017,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -2793,13 +6030,20 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
-          "title": "ARC Size",
+          "title": "ARC Hits/Misses",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -2842,14 +6086,16 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 15
+            "y": 48
           },
+          "hiddenSeries": false,
           "id": 33,
           "legend": {
             "avg": true,
@@ -2864,6 +6110,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2917,8 +6166,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -2939,8 +6190,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -2950,11 +6203,18 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Pool IO/s",
           "tooltip": {
@@ -2999,14 +6259,16 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 15
+            "y": 48
           },
+          "hiddenSeries": false,
           "id": 34,
           "legend": {
             "avg": true,
@@ -3021,6 +6283,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -3074,8 +6339,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -3096,8 +6363,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -3107,11 +6376,18 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Pool Throughput",
           "tooltip": {
@@ -3156,14 +6432,16 @@
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_INFLUX}",
+          "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 15
+            "y": 48
           },
+          "hiddenSeries": false,
           "id": 35,
           "legend": {
             "avg": true,
@@ -3178,6 +6456,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -3231,8 +6512,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -3253,8 +6536,10 @@
                     "type": "mean"
                   },
                   {
-                    "params": [],
-                    "type": "difference"
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   },
                   {
                     "params": [
@@ -3264,11 +6549,18 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "host",
+                  "operator": "=~",
+                  "value": "/^$host$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Pool Throughput",
           "tooltip": {
@@ -3314,14 +6606,56 @@
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 16,
+  "schemaVersion": 22,
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "influx telegraf",
+          "value": "influx telegraf"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Datasource",
+        "multi": false,
+        "name": "source",
+        "options": [],
+        "query": "influxdb",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "$source",
+        "definition": "SHOW TAG VALUES WITH KEY = \"host\"",
+        "hide": 0,
+        "includeAll": false,
+        "index": -1,
+        "label": null,
+        "multi": false,
+        "name": "host",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH KEY = \"host\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -3350,7 +6684,10 @@
     ]
   },
   "timezone": "",
-  "title": "Telegraf",
+  "title": "InfluxTelegraf",
   "uid": "4QFPZ7Oik",
-  "version": 14
+  "variables": {
+    "list": []
+  },
+  "version": 27
 }
