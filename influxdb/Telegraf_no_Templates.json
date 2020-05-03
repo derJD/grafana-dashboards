@@ -1,14 +1,6 @@
 {
   "__inputs": [
     {
-      "name": "DS_GRAPHITE",
-      "label": "graphite",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "graphite",
-      "pluginName": "Graphite"
-    },
-    {
       "name": "DS_INFLUX_TELEGRAF",
       "label": "influx telegraf",
       "description": "",
@@ -38,12 +30,6 @@
     },
     {
       "type": "datasource",
-      "id": "graphite",
-      "name": "Graphite",
-      "version": "1.0.0"
-    },
-    {
-      "type": "datasource",
       "id": "influxdb",
       "name": "InfluxDB",
       "version": "1.0.0"
@@ -64,7 +50,6 @@
   "annotations": {
     "list": [
       {
-        "$$hashKey": "object:13",
         "builtIn": 1,
         "datasource": "$source",
         "enable": false,
@@ -81,11 +66,12 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1588445919508,
+  "iteration": 1588513878884,
   "links": [],
   "panels": [
     {
-      "datasource": "${DS_GRAPHITE}",
+      "collapsed": false,
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -93,14 +79,15 @@
         "y": 0
       },
       "id": 40,
+      "panels": [],
       "title": "System",
       "type": "row"
     },
     {
       "dashboardFilter": "",
       "dashboardTags": [],
-      "datasource": "${DS_GRAPHITE}",
-      "folderId": null,
+      "datasource": "${DS_INFLUX_TELEGRAF}",
+      "folderId": -1,
       "gridPos": {
         "h": 6,
         "w": 5,
@@ -122,8 +109,8 @@
     {
       "dashboardFilter": "",
       "dashboardTags": [],
-      "datasource": "${DS_GRAPHITE}",
-      "folderId": null,
+      "datasource": "${DS_INFLUX_TELEGRAF}",
+      "folderId": -1,
       "gridPos": {
         "h": 6,
         "w": 5,
@@ -748,7 +735,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -770,7 +757,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 13
+            "y": 2
           },
           "hiddenSeries": false,
           "id": 2,
@@ -1057,7 +1044,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 13
+            "y": 2
           },
           "hiddenSeries": false,
           "id": 4,
@@ -1193,7 +1180,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1215,7 +1202,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 14
+            "y": 3
           },
           "hiddenSeries": false,
           "id": 10,
@@ -1385,7 +1372,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 14
+            "y": 3
           },
           "hiddenSeries": false,
           "id": 11,
@@ -1537,7 +1524,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 14
+            "y": 3
           },
           "hiddenSeries": false,
           "id": 12,
@@ -1715,7 +1702,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 12
           },
           "hiddenSeries": false,
           "id": 87,
@@ -1890,7 +1877,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:232",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -1899,7 +1885,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:233",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -1919,7 +1904,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1936,12 +1921,14 @@
           "datasource": "$source",
           "decimals": 2,
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 33
+            "y": 15
           },
+          "hiddenSeries": false,
           "id": 26,
           "legend": {
             "alignAsTable": true,
@@ -1960,7 +1947,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2120,7 +2109,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2136,12 +2125,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 5
           },
+          "hiddenSeries": false,
           "id": 16,
           "legend": {
             "alignAsTable": true,
@@ -2160,7 +2151,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2323,12 +2316,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 42
+            "y": 13
           },
+          "hiddenSeries": false,
           "id": 17,
           "legend": {
             "alignAsTable": true,
@@ -2347,7 +2342,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2504,12 +2501,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 50
+            "y": 21
           },
+          "hiddenSeries": false,
           "id": 18,
           "legend": {
             "alignAsTable": true,
@@ -2528,7 +2527,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null as zero",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -2684,7 +2685,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2716,7 +2717,7 @@
             "h": 3,
             "w": 3,
             "x": 0,
-            "y": 35
+            "y": 6
           },
           "id": 55,
           "interval": null,
@@ -2735,7 +2736,6 @@
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
-          "options": {},
           "postfix": "",
           "postfixFontSize": "50%",
           "prefix": "",
@@ -2836,7 +2836,7 @@
             "h": 3,
             "w": 3,
             "x": 3,
-            "y": 35
+            "y": 6
           },
           "id": 59,
           "interval": null,
@@ -2855,7 +2855,6 @@
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
-          "options": {},
           "postfix": "",
           "postfixFontSize": "50%",
           "prefix": "",
@@ -2940,12 +2939,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 5,
             "w": 15,
             "x": 9,
-            "y": 35
+            "y": 6
           },
+          "hiddenSeries": false,
           "id": 62,
           "legend": {
             "alignAsTable": true,
@@ -2962,7 +2963,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -3087,7 +3090,7 @@
             "h": 3,
             "w": 3,
             "x": 0,
-            "y": 38
+            "y": 9
           },
           "id": 58,
           "interval": null,
@@ -3106,7 +3109,6 @@
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
-          "options": {},
           "postfix": "",
           "postfixFontSize": "50%",
           "prefix": "",
@@ -3207,7 +3209,7 @@
             "h": 3,
             "w": 3,
             "x": 3,
-            "y": 38
+            "y": 9
           },
           "id": 60,
           "interval": null,
@@ -3226,7 +3228,6 @@
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
-          "options": {},
           "postfix": "",
           "postfixFontSize": "50%",
           "prefix": "",
@@ -3311,12 +3312,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 5,
             "w": 15,
             "x": 9,
-            "y": 40
+            "y": 11
           },
+          "hiddenSeries": false,
           "id": 63,
           "legend": {
             "alignAsTable": true,
@@ -3333,7 +3336,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -3458,7 +3463,7 @@
             "h": 3,
             "w": 3,
             "x": 0,
-            "y": 41
+            "y": 12
           },
           "id": 56,
           "interval": null,
@@ -3477,7 +3482,6 @@
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
-          "options": {},
           "postfix": "",
           "postfixFontSize": "50%",
           "prefix": "",
@@ -3578,7 +3582,7 @@
             "h": 3,
             "w": 3,
             "x": 3,
-            "y": 41
+            "y": 12
           },
           "id": 57,
           "interval": null,
@@ -3597,7 +3601,6 @@
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
-          "options": {},
           "postfix": "",
           "postfixFontSize": "50%",
           "prefix": "",
@@ -3682,12 +3685,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 45
+            "y": 16
           },
+          "hiddenSeries": false,
           "id": 64,
           "legend": {
             "alignAsTable": true,
@@ -3704,7 +3709,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -3854,7 +3861,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3870,12 +3877,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 7
           },
+          "hiddenSeries": false,
           "id": 66,
           "legend": {
             "alignAsTable": true,
@@ -3892,7 +3901,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
-          "options": {},
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -4049,7 +4060,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -4065,12 +4076,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 19
           },
+          "hiddenSeries": false,
           "id": 68,
           "legend": {
             "alignAsTable": true,
@@ -4087,6 +4100,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 1,
           "points": true,
@@ -4285,12 +4301,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 12,
             "w": 12,
             "x": 0,
-            "y": 42
+            "y": 25
           },
+          "hiddenSeries": false,
           "id": 72,
           "legend": {
             "alignAsTable": true,
@@ -4311,6 +4329,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -4460,12 +4481,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 0,
+          "fillGradient": 0,
           "gridPos": {
             "h": 12,
             "w": 12,
             "x": 12,
-            "y": 42
+            "y": 25
           },
+          "hiddenSeries": false,
           "id": 73,
           "legend": {
             "alignAsTable": true,
@@ -4487,6 +4510,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 0.5,
           "points": false,
@@ -4627,7 +4653,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -4648,7 +4674,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 20
+            "y": 9
           },
           "hiddenSeries": false,
           "id": 77,
@@ -4756,7 +4782,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:233",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -4765,7 +4790,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:234",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -4791,7 +4815,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 20
+            "y": 9
           },
           "hiddenSeries": false,
           "id": 82,
@@ -4907,7 +4931,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:233",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -4916,7 +4939,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:234",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -4942,7 +4964,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 26
+            "y": 15
           },
           "hiddenSeries": false,
           "id": 81,
@@ -5062,7 +5084,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:687",
               "format": "bytes",
               "label": null,
               "logBase": 1,
@@ -5071,7 +5092,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:688",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -5097,7 +5117,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 26
+            "y": 15
           },
           "hiddenSeries": false,
           "id": 83,
@@ -5217,7 +5237,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:687",
               "format": "bytes",
               "label": null,
               "logBase": 1,
@@ -5226,7 +5245,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:688",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -5248,7 +5266,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 23
           },
           "id": 85,
           "pageSize": null,
@@ -5260,7 +5278,6 @@
           },
           "styles": [
             {
-              "$$hashKey": "object:1647",
               "alias": "Time",
               "align": "auto",
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
@@ -5269,7 +5286,6 @@
               "type": "date"
             },
             {
-              "$$hashKey": "object:1648",
               "alias": "",
               "align": "right",
               "colorMode": null,
@@ -5351,7 +5367,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5367,12 +5383,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 37
+            "y": 10
           },
+          "hiddenSeries": false,
           "id": 22,
           "legend": {
             "avg": false,
@@ -5387,6 +5405,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -5500,12 +5521,14 @@
           "dashes": false,
           "datasource": "$source",
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 37
+            "y": 10
           },
+          "hiddenSeries": false,
           "id": 49,
           "legend": {
             "alignAsTable": true,
@@ -5521,6 +5544,9 @@
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -5633,7 +5659,7 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_GRAPHITE}",
+      "datasource": "${DS_INFLUX_TELEGRAF}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5654,7 +5680,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 39
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 30,
@@ -5924,7 +5950,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 39
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 31,
@@ -6093,7 +6119,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 48
+            "y": 20
           },
           "hiddenSeries": false,
           "id": 33,
@@ -6266,7 +6292,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 48
+            "y": 20
           },
           "hiddenSeries": false,
           "id": 34,
@@ -6439,7 +6465,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 48
+            "y": 20
           },
           "hiddenSeries": false,
           "id": 35,
@@ -6613,7 +6639,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "influx telegraf",
           "value": "influx telegraf"
         },
@@ -6655,7 +6681,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -6689,5 +6715,5 @@
   "variables": {
     "list": []
   },
-  "version": 27
+  "version": 30
 }
